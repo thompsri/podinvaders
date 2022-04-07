@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: broker-gateway
+  labels:
+    app: broker-gateway
+spec:
+  serviceName: "broker-gateway"
+  selector:
+    matchLabels:
+      app: broker-gateway
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: broker-gateway
+    spec:
+      containers:
+        - name: broker-gateway
+          image: nginx
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: trading-engine
+  labels:
+    app: trading-engine
+spec:
+  serviceName: "trading-engine"
+  selector:
+    matchLabels:
+      app: trading-engine
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: trading-engine
+    spec:
+      containers:
+        - name: trading-engine
+          image: nginx
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: risk-controller
+  labels:
+    app: risk-controller
+spec:
+  serviceName: "risk-controller"
+  selector:
+    matchLabels:
+      app: risk-controller
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: risk-controller
+    spec:
+      containers:
+        - name: risk-controller
+          image: nginx
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: exchange-gateway
+  labels:
+    app: exchange-gateway
+spec:
+  serviceName: "exchange-gateway"
+  selector:
+    matchLabels:
+      app: exchange-gateway
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: exchange-gateway
+    spec:
+      containers:
+        - name: exchange-gateway
+          image: nginx
+          imagePullPolicy: IfNotPresent
+
