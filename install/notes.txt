@@ -1,0 +1,73 @@
+USBImager
+sudo apt update && sudo apt dist-upgrade
+ssh-keygen
+ssh-copy-id ambrosia@192.168.1.232
+sudo adduser ambrosia
+# passwd = custard
+sudo usermod -aG sudo ambrosia
+sudo apt install nmap
+nmap -sP 192.168.1.100-250
+sudo vi /boot/firmware/cmdline.txt
+# Docker
+curl -sSL get.docker.com | sh
+sudo usermod -aG docker ambrosia
+
+sudo vi /etc/apt/sources.list
+deb http://packages.cloud.google.com/apt/ kubernetes-xenial main
+sudo apt install kubeadm kubectl kubelet
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+
+sudo apt install -y ansible
+sudo vi /etc/ansible/hosts
+
+ssh-keygen -t rsa
+# Copy the Key to each node in the cluster
+ssh-copy-id -i ~/.ssh/id_rsa.pub ubuntu@worker01
+
+mkpasswd --method=sha-512
+
+ansible workers --become -m reboot
+ansible cluster -m ping -u ubuntu
+
+ubuntu -> picluster
+
+dtoverlay=rpi-poe
+
+login into gateway
+
+pi@raspberrypi   passwd = custard
+
+ssh ambrosia@control01
+ssh ambrosia@10.0.0.80
+
+microk8s kubectl get nodes
+
+Raspberry Pi Checklist
+
+•	Router power supply + lead
+•	Fan/light USB power supply
+•	Pi keyboard + USB
+•	Pi mouse
+•	Micro HDMI
+•	Long CAT cable for laptop
+•	Ethernet/USB adaptor
+•	SD Card Adaptor
+
+Software
+https://github.com/thompsri/podinvaders
+
+kubectl proxy
+
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#/login
+
+https://downey.io/blog/create-raspberry-pi-3-router-dhcp-server/
+
+https://www.learnlinux.tv/building-a-10-node-raspberry-pi-kubernetes-cluster/
+
+# Fetches the 'kubectl' config from the control host
+
+declare -r CONTROL_HOST=10.0.0.80
+
+mkdir -p ~/.kube
+
