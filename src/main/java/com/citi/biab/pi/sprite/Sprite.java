@@ -71,6 +71,10 @@ public class Sprite {
         return rectangle.width;
     }
 
+    public int getHalfWidth() {
+        return rectangle.width / 2;
+    }
+
     public int getHeight() {
         return rectangle.height;
     }

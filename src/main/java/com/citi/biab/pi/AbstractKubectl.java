@@ -46,6 +46,11 @@ public abstract class AbstractKubectl implements Kubectl {
     }
 
     @Override
+    public Map<String, K8sPod> getPodsByName() {
+        return pods;
+    }
+
+    @Override
     public int getReplicas() {
         return replicas;
     }
@@ -94,7 +99,7 @@ public abstract class AbstractKubectl implements Kubectl {
             public void run() {
                 try {
                     while (!tasks.isEmpty()) {
-                        Runnable task = tasks.remove();
+                        final Runnable task = tasks.remove();
                         task.run();
                     }
 
@@ -103,7 +108,7 @@ public abstract class AbstractKubectl implements Kubectl {
                     pods.clear();
 
                     for (Pod v1Pod : podList) {
-                        K8sPod pod = new K8sPod(v1Pod);
+                        final K8sPod pod = new K8sPod(v1Pod);
                         pods.put(pod.getName(), pod);
                     }
 

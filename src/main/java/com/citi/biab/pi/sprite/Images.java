@@ -19,7 +19,7 @@ public final class Images {
         Image image = imageCache.get(resource);
 
         if (image == null) {
-            URL url = Images.class.getResource("/" + resource);
+            final URL url = Images.class.getResource("/" + resource);
 
             if (url == null) {
                 log.error("Image not found: " + resource);

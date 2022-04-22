@@ -1,9 +1,13 @@
 package com.citi.biab.pi;
 
+import java.util.Map;
+
 public interface Kubectl {
     Iterable<? extends K8sPod> getPods();
 
     Iterable<String> getNodes();
+
+    Map<String, K8sPod> getPodsByName();
 
     int getReplicas();
 

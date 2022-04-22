@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: broker-gateway
+  name: client-gateway
   labels:
-    app: broker-gateway
+    app: client-gateway
 spec:
-  serviceName: "broker-gateway"
+  serviceName: "client-gateway"
   selector:
     matchLabels:
-      app: broker-gateway
+      app: client-gateway
   replicas: 1
   template:
     metadata:
       labels:
-        app: broker-gateway
+        app: client-gateway
     spec:
       containers:
-        - name: broker-gateway
+        - name: client-gateway
           image: nginx
           imagePullPolicy: IfNotPresent
 ---

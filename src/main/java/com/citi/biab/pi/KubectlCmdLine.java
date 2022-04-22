@@ -68,7 +68,7 @@ public class KubectlCmdLine extends AbstractKubectl {
             }
 
             if (item instanceof StatefulSet) {
-                StatefulSet statefulSet = (StatefulSet) item;
+                final StatefulSet statefulSet = (StatefulSet) item;
 
                 replicas = statefulSet.getStatus().getReplicas();
                 pendingScale.set(statefulSet.getSpec().getReplicas());

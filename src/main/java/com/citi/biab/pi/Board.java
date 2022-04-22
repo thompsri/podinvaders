@@ -180,7 +180,7 @@ public class Board extends JPanel {
     private void drawBombing(Graphics g) {
 
         for (Alien a : aliens) {
-            Alien.Bomb b = a.getBomb();
+            final Alien.Bomb b = a.getBomb();
 
             if (!b.isDestroyed()) {
                 g.drawImage(b.getImage(), b.getX(), b.getY(), this);
@@ -272,7 +272,7 @@ public class Board extends JPanel {
                 g.setColor(Color.yellow);
             }
 
-            int pending = kubectl.getPendingScale();
+            final int pending = kubectl.getPendingScale();
 
             if (i == pending - 1 && current != pending) {
                 g.setColor(Color.orange);
@@ -311,8 +311,8 @@ public class Board extends JPanel {
             }
             g.setColor(color);
 
-            String podInfo = String.format("%-24s %-16s  [%-48s] %10ds",
-                                           pod.getName(), pod.getStatus(), pod.getNode(), pod.getAgeSeconds());
+            final String podInfo = String.format("%-24s %-16s  [%-48s] %10ds",
+                                                 pod.getName(), pod.getStatus(), pod.getNode(), pod.getAgeSeconds());
 
             g.drawString(podInfo, 5, y);
 
