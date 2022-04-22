@@ -15,7 +15,7 @@ public interface Constants {
     int ALIEN_INIT_Y = 70;
 
     int GO_DOWN = 15;
-    int NUMBER_OF_ALIENS_TO_DESTROY = 24;
+    int NUMBER_OF_ALIENS_TO_DESTROY = 200;
 
     int CHANCE = 5;
     int DELAY = 20;
