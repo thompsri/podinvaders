@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# AWS/EKS
+#java -Dgraphics.scale=2 -Dhttps.proxy=https://${HTTPS_PROXY} -Dk8s.scalable=payment-service -Dk8s.useKubectl=false -jar podinvaders.jar
+
+java -Dgraphics.scale=2 -Dk8s.scalable=trading-engine -Dk8s.useKubectl=false -cp podinvaders.jar com.citi.biab.pi.trading.TradingSystem

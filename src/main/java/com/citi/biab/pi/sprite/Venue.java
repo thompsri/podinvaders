@@ -50,6 +50,8 @@ public class Venue extends Sprite {
 
     private int orderCount;
 
+    private int pendingCount = 0;
+
     public Venue(int x, int y, int type, int ordinal) {
         this.type = Type.values()[type];
         this.ordinal = ordinal;
@@ -80,6 +82,7 @@ public class Venue extends Sprite {
 
         if (pod == null) {
             orderCount = 0;
+            pendingCount = 0;
         }
     }
 
@@ -91,8 +94,22 @@ public class Venue extends Sprite {
         return orderCount;
     }
 
+    public boolean hasPending() {
+        return pendingCount > 0;
+    }
+
+    public void decPending() {
+        pendingCount--;
+
+        if (pendingCount < 0) {
+            pendingCount = 0;
+        }
+    }
+
     public void incOrderCount() {
         this.orderCount++;
+
+        pendingCount++;
     }
 
     public boolean isDisabled() {

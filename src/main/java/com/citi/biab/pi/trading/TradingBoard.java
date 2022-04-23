@@ -216,7 +216,9 @@ public class TradingBoard extends JPanel {
 
                 final Venue.Order order = venue.getOrder();
 
-                if (shot == Constants.CHANCE && venue.isVisible() && !venue.isDisabled() && !order.isActive()) {
+                final boolean hasPending = row == 0 || venue.hasPending();
+
+                if (shot == Constants.CHANCE && hasPending && venue.isVisible() && !venue.isDisabled() && !order.isActive()) {
                     order.setActive(true);
                     order.getRectangle().setLocation(venue.getLocation());
                     order.incX(venue.getWidth() / 2 - order.getWidth() / 2);
@@ -230,8 +232,10 @@ public class TradingBoard extends JPanel {
                         order.setActive(false);
                     }
 
-                    if (row == 0) {
-                        venue.incOrderCount();
+                    if (order.isActive()) {
+                        if (row == 0) {
+                            venue.incOrderCount();
+                        }
                     }
                 }
 
@@ -241,6 +245,7 @@ public class TradingBoard extends JPanel {
                     if (dest.getRectangle().contains(order.getLocation())) {
                         dest.incOrderCount();
                         order.setActive(false);
+                        venue.decPending();
                     } else {
                         order.moveToDest();
                     }
