@@ -20,8 +20,8 @@ public class KubectlCmdLine extends AbstractKubectl {
 
     private static final String KUBECTL = "kubectl";
 
-    public KubectlCmdLine(String nameSpace, String scalable) {
-        super(nameSpace, scalable);
+    public KubectlCmdLine(String nameSpace) {
+        super(nameSpace);
 
         log.info("Using '{}' command line tool", KUBECTL);
     }
@@ -94,7 +94,7 @@ public class KubectlCmdLine extends AbstractKubectl {
     }
 
     protected void scale(int scale) {
-        runKubectl("scale", "statefulset/" + scalableName, "--replicas=" + scale);
+        runKubectl("scale", "statefulset/" + getCurrentStatefulSet(), "--replicas=" + scale);
     }
 
     @Override

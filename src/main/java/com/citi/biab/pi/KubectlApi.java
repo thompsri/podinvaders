@@ -15,8 +15,8 @@ public class KubectlApi extends AbstractKubectl {
 
     private final DefaultKubernetesClient client;
 
-    public KubectlApi(String nameSpace, String scalable) throws IOException {
-        super(nameSpace, scalable);
+    public KubectlApi(String nameSpace) throws IOException {
+        super(nameSpace);
 
         log.info("Using K8s (fabric8) API");
 
@@ -34,21 +34,27 @@ public class KubectlApi extends AbstractKubectl {
 
     @Override
     protected void scale(int scale) {
-        client.apps()
-              .statefulSets()
-              .inNamespace(nameSpace)
-              .withName(scalableName)
-              .scale(scale);
+        final String scalableName = getCurrentStatefulSet();
+
+        if (scalableName != null) {
+            client.apps()
+                  .statefulSets()
+                  .inNamespace(nameSpace)
+                  .withName(scalableName)
+                  .scale(scale);
+        }
     }
 
     @Override
     protected void getScale() {
+        final String scalableName = getCurrentStatefulSet();
+
         if (scalableName != null) {
             final StatefulSet statefulSet = client.apps()
-                    .statefulSets()
-                    .inNamespace(nameSpace)
-                    .withName(scalableName)
-                    .get();
+                                                  .statefulSets()
+                                                  .inNamespace(nameSpace)
+                                                  .withName(scalableName)
+                                                  .get();
 
             if (statefulSet != null) {
                 replicas = statefulSet.getStatus().getReplicas();

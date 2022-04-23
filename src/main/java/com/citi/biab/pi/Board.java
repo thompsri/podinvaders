@@ -248,10 +248,17 @@ public class Board extends JPanel {
         g.setColor(Color.white);
         g.drawString("Scale", xPos, g.getFontMetrics().getHeight());
 
+        final int labelWidth = g.getFontMetrics().stringWidth("scale  ");
+
         final int x = drawLevelBars(g, xPos + g.getFontMetrics().stringWidth("scale  "), kubectl.getReplicas());
 
         g.setColor(Color.green);
         g.drawString(String.format("%d/%d", kubectl.getReplicas(), kubectl.getPendingScale()), x, g.getFontMetrics().getHeight());
+
+        final int yPos = g.getFontMetrics().getHeight() + 15;
+
+        g.setFont(alienFont);
+        g.drawString(kubectl.getCurrentStatefulSet(), xPos + labelWidth, yPos);
 
         drawScore(g);
     }
@@ -527,6 +534,10 @@ public class Board extends JPanel {
 
                 case KeyEvent.VK_S:
                     sounds.toggleMute();
+                    break;
+
+                case KeyEvent.VK_EQUALS:
+                    kubectl.nextStatefulSet();
                     break;
             }
         }

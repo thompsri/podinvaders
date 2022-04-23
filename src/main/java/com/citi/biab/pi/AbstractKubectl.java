@@ -4,7 +4,10 @@ import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -25,15 +28,16 @@ public abstract class AbstractKubectl implements Kubectl {
     private final Map<String, K8sPod> pods = new ConcurrentHashMap<>();
 
     protected final String nameSpace;
-    protected final String scalableName;
+    protected final List<String> statefulSets = new ArrayList<>();
+
+    protected int currentStatefulSet = 0;
 
     protected final AtomicInteger pendingScale = new AtomicInteger();
 
     protected Integer replicas = 0;
 
-    protected AbstractKubectl(String nameSpace, String scalable) {
+    protected AbstractKubectl(String nameSpace) {
         this.nameSpace = nameSpace;
-        this.scalableName = scalable;
     }
 
     @Override
@@ -106,11 +110,18 @@ public abstract class AbstractKubectl implements Kubectl {
                     final List<Pod> podList = listPods();
 
                     pods.clear();
+                    statefulSets.clear();
+
+                    final Set<String> statefuls = new HashSet<>();
 
                     for (Pod v1Pod : podList) {
                         final K8sPod pod = new K8sPod(v1Pod);
                         pods.put(pod.getName(), pod);
+
+                        statefuls.add(v1Pod.getMetadata().getOwnerReferences().get(0).getName());
                     }
+
+                    statefulSets.addAll(statefuls);
 
                     getScale();
                 } catch (Exception e) {
@@ -123,4 +134,21 @@ public abstract class AbstractKubectl implements Kubectl {
     protected abstract void getScale();
 
     protected abstract List<Pod> listPods() throws Exception;
+
+    @Nullable
+    public String getCurrentStatefulSet() {
+        if (currentStatefulSet < statefulSets.size()) {
+            return statefulSets.get(currentStatefulSet);
+        }
+        return null;
+    }
+
+    @Override
+    public String nextStatefulSet() {
+        currentStatefulSet++;
+        if (currentStatefulSet >= statefulSets.size()) {
+            currentStatefulSet = 0;
+        }
+        return getCurrentStatefulSet();
+    }
 }

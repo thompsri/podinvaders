@@ -25,13 +25,13 @@ public class TradingSystem extends JFrame {
         Kubectl kubectl;
 
         if (Boolean.getBoolean("k8s.useKubectl")) {
-            kubectl = new KubectlCmdLine(nameSpace, scalableStatefulSet);
+            kubectl = new KubectlCmdLine(nameSpace);
         } else {
             try {
-                kubectl = new KubectlApi(nameSpace, scalableStatefulSet);
+                kubectl = new KubectlApi(nameSpace);
             } catch (IOException e) {
                 log.error("Error starting K8s api, falling back to 'kubectl' command line", e);
-                kubectl = new KubectlCmdLine(nameSpace, scalableStatefulSet);
+                kubectl = new KubectlCmdLine(nameSpace);
             }
         }
 

@@ -20,4 +20,8 @@ public interface Kubectl {
     void scaleUp();
 
     void scaleDown();
+
+    String nextStatefulSet();
+
+    String getCurrentStatefulSet();
 }
