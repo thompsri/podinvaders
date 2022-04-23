@@ -43,7 +43,7 @@ public class TradingSystem extends JFrame {
     private void initUI(Kubectl kubectl) {
         add(new TradingBoard(kubectl, SCALE));
 
-        setTitle("Ambrosia - Pod Invaders");
+        setTitle("Bank-in-a-Box Trading System");
 
         setSize((int) (Constants.BOARD_WIDTH * SCALE), (int) (Constants.BOARD_HEIGHT * SCALE));
 
