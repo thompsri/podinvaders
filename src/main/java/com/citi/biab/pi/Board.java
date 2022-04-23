@@ -215,9 +215,9 @@ public class Board extends JPanel {
             g.setFont(listFont);
             g.setColor(Color.white);
 
-            g.drawString("[SPACE] to fire, [LEFT] and [RIGHT] arrows to move, [UP] scale pods up, [DOWN] scale pods down, [S] sound on/off",
+            g.drawString("[SPACE] to fire, [LEFT] and [RIGHT] arrows to move, [UP] scale pods up, [DOWN] scale pods down, [S] sound on/off, [=] cycle scalable",
                          5,
-                         Constants.BOARD_HEIGHT - 80);
+                         Constants.BOARD_HEIGHT - 70);
 
             g.drawImage(logo, Constants.BOARD_WIDTH - logo.getWidth(null) - 30, Constants.GROUND - 30, null);
             g.drawImage(citiLogo, Constants.BOARD_WIDTH - citiLogo.getWidth(null) - 30, Constants.BOARD_HEIGHT - 2 * citiLogo.getHeight(null), null);
