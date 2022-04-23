@@ -255,10 +255,12 @@ public class Board extends JPanel {
         g.setColor(Color.green);
         g.drawString(String.format("%d/%d", kubectl.getReplicas(), kubectl.getPendingScale()), x, g.getFontMetrics().getHeight());
 
-        final int yPos = g.getFontMetrics().getHeight() + 15;
+        if (kubectl.nextStatefulSet() != null) {
+            final int yPos = g.getFontMetrics().getHeight() + 15;
 
-        g.setFont(alienFont);
-        g.drawString(kubectl.getCurrentStatefulSet(), xPos + labelWidth, yPos);
+            g.setFont(alienFont);
+            g.drawString(kubectl.getCurrentStatefulSet(), xPos + labelWidth, yPos);
+        }
 
         drawScore(g);
     }
