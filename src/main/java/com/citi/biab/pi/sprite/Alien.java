@@ -26,6 +26,8 @@ public class Alien extends Sprite {
 
     private boolean alienUpMode;
 
+    private int value;
+
     public Alien(int x, int y) {
         rectangle.setLocation(x, y);
         rectangle.setSize(downImage.getWidth(null), downImage.getHeight(null));
@@ -82,6 +84,23 @@ public class Alien extends Sprite {
 
     public void setPod(@Nullable K8sPod pod) {
         this.pod = pod;
+
+        if (pod != null) {
+            final String name = pod.getName();
+
+            if (name.startsWith("client")) {
+                value = 100;
+            }
+            else if (name.startsWith("trading")) {
+                value = 200;
+            }
+            else if (name.startsWith("risk")) {
+                value = 500;
+            }
+            else if (name.startsWith("exchange")) {
+                value = 1000;
+            }
+        }
     }
 
     public String getName() {
@@ -92,6 +111,10 @@ public class Alien extends Sprite {
 
     public void setUpMode(boolean alienUpMode) {
         this.alienUpMode = alienUpMode;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public static class Bomb extends Sprite {

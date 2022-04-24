@@ -62,7 +62,7 @@ public class Board extends JPanel {
     private Shot shot;
 
     private int direction = -1;
-    private int deaths = 0;
+    private int score = 0;
 
     private boolean inGame = true;
 
@@ -71,9 +71,12 @@ public class Board extends JPanel {
     private boolean alienUpMode;
     private long lastUpdate;
 
-    public Board(Kubectl kubectl, double graphicsScale) {
+    private int downStep;
+
+    public Board(Kubectl kubectl, double graphicsScale, int downStep) {
         this.kubectl = kubectl;
         this.graphicsScale = graphicsScale;
+        this.downStep = downStep;
 
         try {
             sounds = new Sounds();
@@ -303,7 +306,7 @@ public class Board extends JPanel {
         g.setColor(Color.white);
         g.drawString("Score", 5, g.getFontMetrics().getHeight());
         g.setColor(Color.green);
-        g.drawString(String.valueOf(deaths * 10), 80, g.getFontMetrics().getHeight());
+        g.drawString(String.valueOf(score), 80, g.getFontMetrics().getHeight());
     }
 
     private void listPods(Graphics g) {
@@ -359,13 +362,6 @@ public class Board extends JPanel {
     }
 
     private void update() {
-        if (deaths == Constants.NUMBER_OF_ALIENS_TO_DESTROY) {
-
-            inGame = false;
-            timer.stop();
-            message = "Game won!";
-        }
-
         if (System.currentTimeMillis() - lastUpdate > 500) {
             lastUpdate = System.currentTimeMillis();
             alienUpMode = !alienUpMode;
@@ -424,7 +420,7 @@ public class Board extends JPanel {
                 if (alien.getY() > Constants.GROUND - alien.getHeight()) {
                     sounds.stopBackground();
                     inGame = false;
-                    message = "Invasion!";
+                    message = "Invasion! - Score = " + score ;
                 }
             }
         }
@@ -452,13 +448,14 @@ public class Board extends JPanel {
 
     private void moveDown() {
         for (Alien alien : aliens) {
-            alien.incY(Constants.GO_DOWN);
+            alien.incY(downStep);
         }
     }
 
     private void processShot() {
-        if (shot.isVisible()) {
+        int minY = canvasSize.height;
 
+        if (shot.isVisible()) {
             for (Alien alien : aliens) {
 
                 if (alien.isVisible() && !alien.recentlyDied() && !alien.isDisabled() && shot.isVisible()) {
@@ -472,16 +469,19 @@ public class Board extends JPanel {
                             kubectl.deletePod(alien.getPod());
                         }
 
-                        deaths++;
+                        score += alien.getValue();
                         shot.die();
+                    }
+                    if (alien.getY() < minY) {
+                        minY = alien.getY();
                     }
                 }
             }
 
             int y = shot.getY();
-            y -= 4;
+            y -= 6;
 
-            if (y < 0) {
+            if (y < minY) {
                 shot.die();
             } else {
                 shot.setY(y);

@@ -31,11 +31,11 @@ public class Player extends Sprite {
 
         switch (key) {
             case KeyEvent.VK_LEFT:
-                dx = -2;
+                dx = -4;
                 break;
 
             case KeyEvent.VK_RIGHT:
-                dx = 2;
+                dx = 4;
                 break;
         }
     }
