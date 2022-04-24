@@ -4,6 +4,7 @@ import com.citi.biab.pi.sprite.Alien;
 import com.citi.biab.pi.sprite.Images;
 import com.citi.biab.pi.sprite.Player;
 import com.citi.biab.pi.sprite.Shot;
+import io.fabric8.kubernetes.api.model.apps.StatefulSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -220,7 +221,7 @@ public class Board extends JPanel {
                          Constants.BOARD_HEIGHT - 70);
 
             g.drawImage(logo, Constants.BOARD_WIDTH - logo.getWidth(null) - 30, Constants.GROUND - 30, null);
-            g.drawImage(citiLogo, Constants.BOARD_WIDTH - citiLogo.getWidth(null) - 30, Constants.BOARD_HEIGHT - 2 * citiLogo.getHeight(null), null);
+            g.drawImage(citiLogo, Constants.BOARD_WIDTH - citiLogo.getWidth(null) - 30, Constants.BOARD_HEIGHT - 2 * citiLogo.getHeight(null) - 20, null);
 
             drawAliens(g);
             drawShot(g);
@@ -250,16 +251,22 @@ public class Board extends JPanel {
 
         final int labelWidth = g.getFontMetrics().stringWidth("scale  ");
 
-        final int x = drawLevelBars(g, xPos + g.getFontMetrics().stringWidth("scale  "), kubectl.getReplicas());
+        final StatefulSet currentStatefulSet = kubectl.getCurrentStatefulSet();
 
-        g.setColor(Color.green);
-        g.drawString(String.format("%d/%d", kubectl.getReplicas(), kubectl.getPendingScale()), x, g.getFontMetrics().getHeight());
+        if (currentStatefulSet != null) {
+            final int x = drawLevelBars(g, xPos + g.getFontMetrics().stringWidth("scale  "),
+                                        currentStatefulSet.getStatus().getReplicas());
 
-        if (kubectl.nextStatefulSet() != null) {
-            final int yPos = g.getFontMetrics().getHeight() + 15;
+            g.setColor(Color.green);
+            g.drawString(String.format("%d/%d", currentStatefulSet.getStatus().getReplicas(),
+                                       currentStatefulSet.getSpec().getReplicas()), x, g.getFontMetrics().getHeight());
 
-            g.setFont(alienFont);
-            g.drawString(kubectl.getCurrentStatefulSet(), xPos + labelWidth, yPos);
+            if (kubectl.getCurrentStatefulSet() != null) {
+                final int yPos = g.getFontMetrics().getHeight() + 15;
+
+                g.setFont(alienFont);
+                g.drawString(kubectl.getCurrentStatefulSet().getMetadata().getName(), xPos + labelWidth, yPos);
+            }
         }
 
         drawScore(g);
@@ -277,24 +284,22 @@ public class Board extends JPanel {
                 g.setColor(Color.green);
             }
 
-            if (i >= current && i < kubectl.getPendingScale()) {
-                g.setColor(Color.yellow);
+            final StatefulSet currentStatefulSet = kubectl.getCurrentStatefulSet();
+
+            if (currentStatefulSet != null) {
+                if (i < current && currentStatefulSet.getSpec().getReplicas() != currentStatefulSet.getStatus().getReplicas()) {
+                    g.setColor(Color.yellow);
+                }
+                g.fillRect(xPos, blockY, 15, 20);
+                xPos += 20;
             }
-
-            final int pending = kubectl.getPendingScale();
-
-            if (i == pending - 1 && current != pending) {
-                g.setColor(Color.orange);
-            }
-
-            g.fillRect(xPos, blockY, 15, 20);
-            xPos += 20;
         }
 
         return xPos;
     }
 
     private void drawScore(Graphics g) {
+        g.setFont(scaleFont);
         g.setColor(Color.white);
         g.drawString("Score", 5, g.getFontMetrics().getHeight());
         g.setColor(Color.green);
@@ -456,7 +461,7 @@ public class Board extends JPanel {
 
             for (Alien alien : aliens) {
 
-                if (alien.isVisible() && shot.isVisible()) {
+                if (alien.isVisible() && !alien.recentlyDied() && !alien.isDisabled() && shot.isVisible()) {
                     if (alien.getRectangle().contains(shot.getLocation())) {
 
                         alien.setImage(explosionImage);

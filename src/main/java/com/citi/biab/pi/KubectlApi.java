@@ -33,34 +33,25 @@ public class KubectlApi extends AbstractKubectl {
     }
 
     @Override
-    protected void scale(int scale) {
-        final String scalableName = getCurrentStatefulSet();
-
-        if (scalableName != null) {
+    protected synchronized void scale() {
+        for (StatefulSet statefulSet : pendingStatefulSets.values()) {
             client.apps()
                   .statefulSets()
                   .inNamespace(nameSpace)
-                  .withName(scalableName)
-                  .scale(scale);
+                  .withName(statefulSet.getMetadata().getName())
+                  .scale(statefulSet.getSpec().getReplicas());
         }
+        pendingStatefulSets.clear();
     }
 
     @Override
-    protected void getScale() {
-        final String scalableName = getCurrentStatefulSet();
-
-        if (scalableName != null) {
-            final StatefulSet statefulSet = client.apps()
-                                                  .statefulSets()
-                                                  .inNamespace(nameSpace)
-                                                  .withName(scalableName)
-                                                  .get();
-
-            if (statefulSet != null) {
-                replicas = statefulSet.getStatus().getReplicas();
-                pendingScale.set(statefulSet.getSpec().getReplicas());
-            }
-        }
+    protected synchronized void getScale() {
+        statefulSets.clear();
+        statefulSets.addAll(client.apps()
+                                  .statefulSets()
+                                  .inNamespace(nameSpace)
+                                  .list()
+                                  .getItems());
     }
 
     @Override

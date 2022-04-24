@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import java.awt.Image;
 import java.awt.Point;
 
-import static com.citi.biab.pi.sprite.Alien.STATUS_PENDING;
+import static com.citi.biab.pi.sprite.Alien.STATUS_RUNNING;
 
 public class Venue extends Sprite {
 
@@ -113,7 +113,7 @@ public class Venue extends Sprite {
     }
 
     public boolean isDisabled() {
-        return pod == null || STATUS_PENDING.equals(pod.getStatus());
+        return pod == null || !STATUS_RUNNING.equals(pod.getStatus());
     }
 
     public static class Order extends Sprite {

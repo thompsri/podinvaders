@@ -35,12 +35,17 @@ public class Alien extends Sprite {
 
     @Override
     public Image getImage() {
-        if (pod != null && STATUS_PENDING.equals(pod.getStatus())) {
+        if (recentlyDied()) {
+            return explosionImage;
+        }
+        if (isDisabled()) {
             return pendingImage;
         }
-        return isRunning()
-               ? (alienUpMode ? upImage : downImage)
-               : explosionImage;
+        return alienUpMode ? upImage : downImage;
+    }
+
+    public boolean isDisabled() {
+        return pod == null || !STATUS_RUNNING.equals(pod.getStatus());
     }
 
     @Override
@@ -50,12 +55,8 @@ public class Alien extends Sprite {
         deathTime = System.currentTimeMillis();
     }
 
-    private boolean isRunning() {
-        return !recentlyDied() && pod != null && STATUS_RUNNING.equals(pod.getStatus());
-    }
-
-    private boolean recentlyDied() {
-        return (System.currentTimeMillis() - deathTime < TimeUnit.SECONDS.toMillis(10));
+    public boolean recentlyDied() {
+        return (System.currentTimeMillis() - deathTime < TimeUnit.SECONDS.toMillis(5));
     }
 
     public void act(int direction) {

@@ -1,5 +1,7 @@
 package com.citi.biab.pi;
 
+import io.fabric8.kubernetes.api.model.apps.StatefulSet;
+
 import java.util.Map;
 
 public interface Kubectl {
@@ -9,10 +11,6 @@ public interface Kubectl {
 
     Map<String, K8sPod> getPodsByName();
 
-    int getReplicas();
-
-    int getPendingScale();
-
     void deletePod(K8sPod pod);
 
     void start();
@@ -21,7 +19,7 @@ public interface Kubectl {
 
     void scaleDown();
 
-    String nextStatefulSet();
+    void nextStatefulSet();
 
-    String getCurrentStatefulSet();
+    StatefulSet getCurrentStatefulSet();
 }

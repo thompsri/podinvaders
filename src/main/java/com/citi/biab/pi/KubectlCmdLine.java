@@ -67,11 +67,11 @@ public class KubectlCmdLine extends AbstractKubectl {
                 pods.add((Pod) item);
             }
 
+            statefulSets.clear();
+
             if (item instanceof StatefulSet) {
                 final StatefulSet statefulSet = (StatefulSet) item;
-
-                replicas = statefulSet.getStatus().getReplicas();
-                pendingScale.set(statefulSet.getSpec().getReplicas());
+                statefulSets.add(statefulSet);
             }
         }
         return pods;
@@ -93,8 +93,10 @@ public class KubectlCmdLine extends AbstractKubectl {
                    .collect(Collectors.toList());
     }
 
-    protected void scale(int scale) {
-        runKubectl("scale", "statefulset/" + getCurrentStatefulSet(), "--replicas=" + scale);
+    protected void scale() {
+        for (StatefulSet statefulSet : pendingStatefulSets.values()) {
+            runKubectl("scale", "statefulset/" + getCurrentStatefulSet(), "--replicas=" + statefulSet.getSpec().getReplicas());
+        }
     }
 
     @Override

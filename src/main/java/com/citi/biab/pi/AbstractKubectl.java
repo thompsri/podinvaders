@@ -1,13 +1,14 @@
 package com.citi.biab.pi;
 
 import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.apps.StatefulSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -18,7 +19,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractKubectl implements Kubectl {
     private static final Logger log = LoggerFactory.getLogger(AbstractKubectl.class);
@@ -28,13 +28,12 @@ public abstract class AbstractKubectl implements Kubectl {
     private final Map<String, K8sPod> pods = new ConcurrentHashMap<>();
 
     protected final String nameSpace;
-    protected final List<String> statefulSets = new ArrayList<>();
+
+    protected final List<StatefulSet> statefulSets = new ArrayList<>();
+
+    protected final Map<String, StatefulSet> pendingStatefulSets = new HashMap<>();
 
     protected int currentStatefulSet = 0;
-
-    protected final AtomicInteger pendingScale = new AtomicInteger();
-
-    protected Integer replicas = 0;
 
     protected AbstractKubectl(String nameSpace) {
         this.nameSpace = nameSpace;
@@ -55,16 +54,6 @@ public abstract class AbstractKubectl implements Kubectl {
     }
 
     @Override
-    public int getReplicas() {
-        return replicas;
-    }
-
-    @Override
-    public int getPendingScale() {
-        return pendingScale.get();
-    }
-
-    @Override
     public void deletePod(K8sPod pod) {
         tasks.add(() -> deletePod(pod.getName()));
     }
@@ -73,10 +62,16 @@ public abstract class AbstractKubectl implements Kubectl {
 
     @Override
     public void scaleDown() {
-        pendingScale.getAndDecrement();
+        final StatefulSet statefulSet = getCurrentStatefulSet();
 
-        if (pendingScale.get() < 0) {
-            pendingScale.set(0);
+        if (statefulSet != null) {
+            pendingStatefulSets.put(statefulSet.getMetadata().getName(), statefulSet);
+
+            final int scale = statefulSet.getSpec().getReplicas();
+
+            if (scale > 0) {
+                statefulSet.getSpec().setReplicas(scale - 1);
+            }
         }
 
         scaleAsync();
@@ -84,15 +79,24 @@ public abstract class AbstractKubectl implements Kubectl {
 
     @Override
     public void scaleUp() {
-        pendingScale.getAndIncrement();
+        final StatefulSet statefulSet = getCurrentStatefulSet();
+
+        if (statefulSet != null) {
+            pendingStatefulSets.put(statefulSet.getMetadata().getName(), statefulSet);
+
+            final int scale = statefulSet.getSpec().getReplicas();
+
+            statefulSet.getSpec().setReplicas(scale + 1);
+        }
+
         scaleAsync();
     }
 
     private void scaleAsync() {
-        tasks.add(() -> scale(pendingScale.get()));
+        tasks.add(this::scale);
     }
 
-    protected abstract void scale(int scale);
+    protected abstract void scale();
 
     @Override
     public void start() {
@@ -110,25 +114,18 @@ public abstract class AbstractKubectl implements Kubectl {
                     final List<Pod> podList = listPods();
 
                     pods.clear();
-                    statefulSets.clear();
-
-                    final Set<String> statefuls = new HashSet<>();
 
                     for (Pod v1Pod : podList) {
                         final K8sPod pod = new K8sPod(v1Pod);
                         pods.put(pod.getName(), pod);
-
-                        statefuls.add(v1Pod.getMetadata().getOwnerReferences().get(0).getName());
                     }
-
-                    statefulSets.addAll(statefuls);
 
                     getScale();
                 } catch (Exception e) {
                     log.error("Error listing pods", e);
                 }
             }
-        }, 0, TimeUnit.SECONDS.toMillis(5));
+        }, 0, TimeUnit.SECONDS.toMillis(3));
     }
 
     protected abstract void getScale();
@@ -136,19 +133,21 @@ public abstract class AbstractKubectl implements Kubectl {
     protected abstract List<Pod> listPods() throws Exception;
 
     @Nullable
-    public String getCurrentStatefulSet() {
+    public synchronized StatefulSet getCurrentStatefulSet() {
         if (currentStatefulSet < statefulSets.size()) {
-            return statefulSets.get(currentStatefulSet);
+            final StatefulSet statefulSet = statefulSets.get(currentStatefulSet);
+
+            return pendingStatefulSets.getOrDefault(statefulSet.getMetadata().getName(), statefulSet);
         }
+        currentStatefulSet = 0;
         return null;
     }
 
     @Override
-    public String nextStatefulSet() {
+    public synchronized void nextStatefulSet() {
         currentStatefulSet++;
         if (currentStatefulSet >= statefulSets.size()) {
             currentStatefulSet = 0;
         }
-        return getCurrentStatefulSet();
     }
 }
