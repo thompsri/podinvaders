@@ -1,0 +1,7 @@
+---
+- hosts: workers
+  remote_user: ubuntu
+  become: yes
+  tasks:
+  - name: "Date"
+    shell: sudo timedatectl set-ntp true

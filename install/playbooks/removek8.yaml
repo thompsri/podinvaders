@@ -1,0 +1,7 @@
+---
+- hosts: workers
+  remote_user: ubuntu   # Using Remote user as ubuntu
+  become: yes
+  tasks:
+  - name: Remove microk8s
+    shell: snap remove microk8s

@@ -1,0 +1,9 @@
+---
+- hosts: workers
+  remote_user: ubuntu
+  become: yes
+  tasks:
+  - name: "Configure fans"
+    lineinfile:
+      path: /boot/firmware/usercfg.txt
+      line: 'dtoverlay=rpi-poe'

@@ -1,0 +1,9 @@
+
+---
+- hosts: workers
+  remote_user: ubuntu
+  become: yes
+  tasks:
+  - name: "Update"
+    apt:
+      update-cache: yes

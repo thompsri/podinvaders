@@ -1,0 +1,7 @@
+---
+- hosts: workers
+  remote_user: ubuntu   # Using Remote user as ubuntu
+  become: yes
+  tasks:
+  - name: Install microk8s
+    shell: snap install microk8s --classic
