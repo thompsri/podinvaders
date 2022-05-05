@@ -11,7 +11,7 @@ import static com.citi.biab.pi.sprite.Alien.STATUS_RUNNING;
 public class Venue extends Sprite {
 
     enum Type {
-        CLIENT_GATEWAY("client-gateway", "client"),
+        CLIENT_GATEWAY("broker-gateway", "client"),
         TRADING_ENGINE("trading-engine", "trading-engine"),
         RISK_ENGINE("risk-controller", "risk"),
         EXCHANGE("exchange-gateway", "exchange");

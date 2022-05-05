@@ -36,7 +36,7 @@ public class PodInvaders extends JFrame {
     }
 
     private void initUI(Kubectl kubectl) {
-        add(new Board(kubectl, SCALE, Integer.getInteger("downStep", 5)));
+        add(new Board(kubectl, SCALE, Integer.getInteger("downStep", 0)));
 
         setTitle("Ambrosia - Pod Invaders");
 
