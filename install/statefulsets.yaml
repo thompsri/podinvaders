@@ -19,7 +19,7 @@ spec:
         - name: broker-gateway
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 10
       tolerations:
         - key: node.kubernetes.io/not-ready
           effect: NoExecute
@@ -50,7 +50,7 @@ spec:
         - name: trading-engine
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 10
       tolerations:
         - key: node.kubernetes.io/not-ready
           effect: NoExecute
@@ -81,7 +81,7 @@ spec:
         - name: risk-controller
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 10
       tolerations:
         - key: node.kubernetes.io/not-ready
           effect: NoExecute
@@ -112,7 +112,7 @@ spec:
         - name: exchange-gateway
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 10
       tolerations:
         - key: node.kubernetes.io/not-ready
           effect: NoExecute
