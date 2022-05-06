@@ -3,4 +3,4 @@
 # AWS/EKS
 #java -Dgraphics.scale=2 -Dhttps.proxy=https://${HTTPS_PROXY} -Dk8s.useKubectl=false -Dk8s.namespace=icg-msst-herschel-175383 -cp podinvaders.jar com.citi.biab.pi.trading.TradingSystem
 
-java -Dgraphics.scale=2 -Dk8s.useKubectl=false -cp podinvaders.jar com.citi.biab.pi.trading.TradingSystem
+java -Dgraphics.scale=0.8 -Dk8s.useKubectl=false -cp podinvaders.jar com.citi.biab.pi.trading.TradingSystem

@@ -3,4 +3,4 @@
 # AWS/EKS
 #java -Dgraphics.scale=2 -Dhttps.proxy=https://${HTTPS_PROXY} -Dk8s.namespace=icg-msst-herschel-175383 -Dk8s.useKubectl=false -jar podinvaders.jar
 
-java -Dgraphics.scale=1 -Dk8s.useKubectl=false -jar podinvaders.jar
+java -Dgraphics.scale=0.8 -Dk8s.useKubectl=false -jar podinvaders.jar
