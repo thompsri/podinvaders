@@ -13,6 +13,8 @@ public interface Kubectl {
 
     void deletePod(K8sPod pod);
 
+    void forceDeletePod(K8sPod pod);
+
     void start();
 
     void scaleUp();

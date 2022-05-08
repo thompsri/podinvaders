@@ -58,6 +58,13 @@ public abstract class AbstractKubectl implements Kubectl {
         tasks.add(() -> deletePod(pod.getName()));
     }
 
+    @Override
+    public void forceDeletePod(K8sPod pod) {
+        tasks.add(() -> forceDeletePod(pod.getName()));
+    }
+
+    protected abstract void forceDeletePod(String name);
+
     protected abstract void deletePod(String name);
 
     @Override
@@ -117,6 +124,10 @@ public abstract class AbstractKubectl implements Kubectl {
 
                     for (Pod v1Pod : podList) {
                         final K8sPod pod = new K8sPod(v1Pod);
+
+                        if (pod.getDeleteAgeSeconds() > 10) {
+                            forceDeletePod(pod);
+                        }
                         pods.put(pod.getName(), pod);
                     }
 

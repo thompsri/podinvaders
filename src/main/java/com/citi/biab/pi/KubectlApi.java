@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,16 @@ public class KubectlApi extends AbstractKubectl {
               .delete();
     }
 
+    protected void forceDeletePod(String podName) {
+        log.info("Force deleting pod {}", podName);
+
+        client.pods()
+                .inNamespace(nameSpace)
+                .withName(podName)
+                .withGracePeriod(0)
+                .delete();
+    }
+
     @Override
     protected synchronized void scale() {
         for (StatefulSet statefulSet : pendingStatefulSets.values()) {
@@ -52,6 +64,7 @@ public class KubectlApi extends AbstractKubectl {
                                   .inNamespace(nameSpace)
                                   .list()
                                   .getItems());
+        Collections.sort(statefulSets, Comparator.comparing(o -> o.getMetadata().getName()));
     }
 
     @Override

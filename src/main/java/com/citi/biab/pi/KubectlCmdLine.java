@@ -109,4 +109,11 @@ public class KubectlCmdLine extends AbstractKubectl {
 
         runKubectl("delete", "pod/" + podName);
     }
+
+    @Override
+    protected void forceDeletePod(String podName) {
+        log.info("Force deleting pod {}", podName);
+
+        runKubectl("delete", "pod/" + podName, "--force");
+    }
 }

@@ -19,15 +19,16 @@ spec:
         - name: broker-gateway
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 20
       tolerations:
         - key: node.kubernetes.io/not-ready
+          operator: Exists
           effect: NoExecute
-          tolerationSeconds: 0
+          tolerationSeconds: 1
         - key: node.kubernetes.io/unreachable
           operator: Exists
           effect: NoExecute
-          tolerationSeconds: 0
+          tolerationSeconds: 1
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -50,15 +51,16 @@ spec:
         - name: trading-engine
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 20
       tolerations:
         - key: node.kubernetes.io/not-ready
+          operator: Exists
           effect: NoExecute
-          tolerationSeconds: 0
+          tolerationSeconds: 1
         - key: node.kubernetes.io/unreachable
           operator: Exists
           effect: NoExecute
-          tolerationSeconds: 0
+          tolerationSeconds: 1
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -81,15 +83,16 @@ spec:
         - name: risk-controller
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 20
       tolerations:
         - key: node.kubernetes.io/not-ready
+          operator: Exists
           effect: NoExecute
-          tolerationSeconds: 0
+          tolerationSeconds: 1
         - key: node.kubernetes.io/unreachable
           operator: Exists
           effect: NoExecute
-          tolerationSeconds: 0
+          tolerationSeconds: 1
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -112,12 +115,13 @@ spec:
         - name: exchange-gateway
           image: nginx
           imagePullPolicy: IfNotPresent
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 20
       tolerations:
         - key: node.kubernetes.io/not-ready
           effect: NoExecute
-          tolerationSeconds: 0
+          operator: Exists
+          tolerationSeconds: 1
         - key: node.kubernetes.io/unreachable
           operator: Exists
           effect: NoExecute
-          tolerationSeconds: 0
+          tolerationSeconds: 1

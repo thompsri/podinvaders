@@ -30,6 +30,14 @@ public class K8sPod {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - time.getLong(ChronoField.INSTANT_SECONDS);
     }
 
+    public long getDeleteAgeSeconds() {
+        if (pod.getMetadata().getDeletionTimestamp() != null) {
+            final TemporalAccessor time = DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(pod.getMetadata().getDeletionTimestamp());
+            return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - time.getLong(ChronoField.INSTANT_SECONDS);
+        }
+        return 0;
+    }
+
     public String getNode() {
         return pod.getSpec().getNodeName();
     }
