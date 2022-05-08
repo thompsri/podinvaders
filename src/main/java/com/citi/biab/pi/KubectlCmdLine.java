@@ -10,9 +10,7 @@ import io.fabric8.kubernetes.client.utils.Serialization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class KubectlCmdLine extends AbstractKubectl {
@@ -91,6 +89,11 @@ public class KubectlCmdLine extends AbstractKubectl {
                    .map(hasMetadata -> hasMetadata.getMetadata().getName())
                    .sorted()
                    .collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<String> getReadyNodes() {
+        return Collections.emptySet();
     }
 
     protected void scale() {

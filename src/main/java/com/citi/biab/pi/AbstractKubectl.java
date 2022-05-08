@@ -118,6 +118,8 @@ public abstract class AbstractKubectl implements Kubectl {
                         task.run();
                     }
 
+                    final Set<String> readyNodes = getReadyNodes();
+
                     final List<Pod> podList = listPods();
 
                     pods.clear();
@@ -125,7 +127,7 @@ public abstract class AbstractKubectl implements Kubectl {
                     for (Pod v1Pod : podList) {
                         final K8sPod pod = new K8sPod(v1Pod);
 
-                        if (pod.getDeleteAgeSeconds() > 10) {
+                        if (!readyNodes.contains(pod.getNode()) || pod.getDeleteAgeSeconds() > 10) {
                             forceDeletePod(pod);
                         }
                         pods.put(pod.getName(), pod);

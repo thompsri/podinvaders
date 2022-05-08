@@ -12,13 +12,14 @@ public class NodeColors {
     private final Color[] rainbow = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.cyan, Color.magenta};
 
     private final Map<String, Color> nodeColours = new HashMap<>(
-        ImmutableMap.of(
-            "worker01", Color.red,
-            "worker02", Color.orange,
-            "worker03", Color.yellow,
-            "worker04", Color.green,
-            "worker05", Color.blue,
-            "worker06", Color.magenta
+            ImmutableMap.of(
+                    "worker01", Color.red,
+                    "worker02", Color.orange,
+                    "worker03", Color.yellow,
+                    "worker04", Color.green,
+                    "worker05", Color.blue,
+                    "worker06", Color.magenta,
+                    "control01", Color.gray
             ));
 
     public synchronized void addNode(String nodeName) {
